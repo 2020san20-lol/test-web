@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Cannon Test - Security Challenge</title>
+  <link rel="stylesheet" href="styles.css">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+</head>
+<body>
+  <header>
+    <h1>Welcome to the Cyber Cannon Test Site</h1>
+    <p>This page is secured with multiple layers of protection. Only authorized users can trigger flood attacks.</p>
+  </header>
+  
+  <main id="main-content">
+    <!-- Initial login form for challenge -->
+    <div id="login-form">
+      <h2>Login Challenge</h2>
+      <p>Enter your credentials to proceed:</p>
+      <form id="login-form" onsubmit="return loginUser(event)">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+
+    <!-- After successful login, show challenge -->
+    <div id="attack-area" style="display: none;">
+      <h2>Test Endpoint</h2>
+      <p>Try to send requests to this page and see how it handles traffic.</p>
+      <button id="trigger-attack" onclick="triggerFlood()" disabled>Trigger Flood Attack</button>
+
+      <!-- Decryption challenge -->
+      <p id="decryption-challenge">
+        Enter the encryption key to unlock the attack trigger:
+        <input type="text" id="decryption-key" placeholder="Enter key" required>
+        <button onclick="checkDecryptionKey()">Submit</button>
+      </p>
+
+      <h2>Status</h2>
+      <p>Current Server Status: <span id="status">Online</span></p>
+    </div>
+  </main>
+
+  <footer>
+    <p>Test Environment for Educational Purposes Only</p>
+  </footer>
+
+  <script>
+    // Simulated login flow with credentials
+    const validUsername = "admin";
+    const validPassword = "securePassword123";  // Replace with a more complex password for testing
+
+    // Rate Limiting: prevent multiple flood attacks in short period
+    let lastAttackTime = 0;
+    const attackCooldown = 10000; // 10 seconds cooldown
+
+    function loginUser(event) {
+      event.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      if (username === validUsername && password === validPassword) {
+        alert("Login Successful!");
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('attack-area').style.display = 'block';
+        return true;
+      } else {
+        alert("Invalid credentials. Please try again.");
+        return false;
+      }
+    }
+
+    function checkDecryptionKey() {
+      const key = document.getElementById('decryption-key').value;
+      const correctKey = "DecryptMe";  // The encryption key that unlocks the attack button
+
+      if (key === correctKey) {
+        alert("Key verified! You may now trigger the flood attack.");
+        document.getElementById('trigger-attack').disabled = false;
+      } else {
+        alert("Incorrect decryption key. Please try again.");
+      }
+    }
+
+    // Flood attack simulation with rate limiting
+    function triggerFlood() {
+      const currentTime = Date.now();
+      if (currentTime - lastAttackTime < attackCooldown) {
+        alert('Please wait a few seconds before triggering another attack.');
+        return;
+      }
+      lastAttackTime = currentTime;
+      document.getElementById('status').innerText = 'Under Attack...';
+      alert('Flood attack simulation triggered!');
+    }
+  </script>
+</body>
+</html>
